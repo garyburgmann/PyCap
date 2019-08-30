@@ -8,6 +8,8 @@ __copyright__ = '2014, Vanderbilt University'
 import json
 import warnings
 
+import requests
+
 from .request import RCRequest, RedcapError, RequestException
 import semantic_version
 
@@ -499,6 +501,50 @@ class Project(object):
         if 'error' in response:
             raise RedcapError(str(response))
         return response
+
+    def delete_records(self, records):
+        """
+        Delete records
+
+        Notes
+        -----
+        Requires list of record_id's
+
+        Parameters
+        ----------
+        records : list
+            list of record_id's
+
+        Returns
+        -------
+        content : int
+            count of deleted records
+        """
+        data = {
+            'token': self.token,
+            'content': 'record',
+            'action': 'delete'
+        }
+        for idx, record in enumerate(records):
+            data.update(
+                {
+                    f'records[{idx}]': str(record)
+                }
+            )
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+        }
+        res = requests.post(
+            url=self.url,
+            data=data,
+            headers=headers
+        )
+        res.raise_for_status()
+
+        # return count
+        return int(res.text)
 
     def export_file(self, record, field, event=None, return_format='json'):
         """
