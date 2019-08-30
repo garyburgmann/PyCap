@@ -37,7 +37,7 @@ if __name__ == '__main__':
         description="""PyCap: Python interface to REDCap""",
         license='MIT',
         url='http://sburns.github.com/PyCap',
-        version=get_version(),
+        version='1.0.1',
         download_url='http://sburns.github.com/PyCap',
         long_description=long_desc,
         packages=['redcap'],
